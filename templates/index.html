@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coffee Sales BI Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #fafafa; color: #222; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 12px; margin-bottom: 18px; }
+    .card { background: white; padding: 14px; border-radius: 10px; border: 1px solid #ddd; }
+    .value { font-size: 1.2rem; font-weight: bold; margin-top: 6px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .panel { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 10px; }
+    .empty { padding: 10px; color: #888; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Coffee Shop Sales Intelligence Dashboard</h1>
+  <p><strong>CSV path:</strong> {{ csv_path }}</p>
+
+  {% if not has_data %}
+    <div class="panel">
+      <h3>No data found</h3>
+      <p>Place your CSV at <code>{{ csv_path }}</code> or set <code>COFFEE_CSV</code> environment variable.</p>
+      <p>Required/expected columns include: <code>transaction_date</code>, <code>transaction_time</code>, <code>Total_Bill</code>, <code>product_category</code>, <code>store_location</code>.</p>
+    </div>
+  {% else %}
+    <div class="kpis">
+      <div class="card"><div>Total Revenue</div><div class="value">{{ kpis.total_revenue }}</div></div>
+      <div class="card"><div>Total Transactions</div><div class="value">{{ kpis.total_transactions }}</div></div>
+      <div class="card"><div>Average Bill</div><div class="value">{{ kpis.avg_bill }}</div></div>
+      <div class="card"><div>Best Category</div><div class="value">{{ kpis.best_category }}</div></div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">{{ hourly_chart|safe }}</div>
+      <div class="panel">{{ dow_chart|safe }}</div>
+      <div class="panel">{{ category_chart|safe }}</div>
+      <div class="panel">{{ store_chart|safe }}</div>
+    </div>
+  {% endif %}
+</body>
+</html>
